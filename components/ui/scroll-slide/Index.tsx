@@ -4,8 +4,9 @@ import Block, { SlideValue } from "./components/Block";
 import { bgs, headings, imgs } from "./data";
 import { Slide } from "./types";
 import Image, { StaticImageData } from 'next/image';
+import { observer } from "mobx-react-lite";
 
-export default function () {
+const Index = () => {
     const [slide, setSlide] = useState<number>(0);
     const [offset, setOffset] = useState<Slide>(Slide.hide);
     const [value, setValue] = useState<SlideValue>({ bg: bgs[slide], heading: headings[slide], img: imgs[slide] })
@@ -39,3 +40,5 @@ export default function () {
         </div>
     )
 }
+
+export default observer(Index);

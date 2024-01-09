@@ -1,3 +1,5 @@
-import Index from '../../components/ui/scroll-slide/Index';
+import React from 'react';
+
+const Index = React.lazy(() => import('../../components/ui/scroll-slide'))
 
 export default Index
