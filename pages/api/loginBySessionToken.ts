@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { IDbTokenDto, IDbUserDto } from "../../types/dto";
 import { getRoutes } from "../../utils/getRoutes";
-import { parsedFile } from "../tools/file";
+import { parsedFile } from "../../utils/file";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const sessionToken = req.cookies.sessionToken;

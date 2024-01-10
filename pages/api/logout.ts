@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { IDbTokenDto } from "../../types/dto";
-import { parsedFile, saveFile } from "../tools/file";
+import { parsedFile, saveFile } from "../../utils/file";
 const users = parsedFile("./db/users.json");
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {

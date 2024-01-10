@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { IDbUserDto } from "../../types/dto";
 import { getRoutes } from "../../utils/getRoutes";
-import { parsedFile, saveFile } from "../tools/file";
+import { parsedFile, saveFile } from "../../utils/file";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const users = parsedFile("./db/users.json") as IDbUserDto[];

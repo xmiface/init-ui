@@ -1,12 +1,12 @@
 import { observer } from "mobx-react-lite";
 import type { AppProps } from "next/app";
+import { useRouter } from "next/router";
 import React, { useEffect } from "react";
+import Header from "../components/Header";
 import { Loader } from "../components/Loader";
 import { RootStore } from "../store/RootStore";
 import "../styles/globals.css";
 import LoginPage from "./login";
-import Header from "../components/Header";
-import { useRouter } from "next/router";
 
 const routesWithoutLayout = ['/clear', 'ui'];
 const layoutRequire = (pathname: string) => routesWithoutLayout.some(el => el.match(pathname))
