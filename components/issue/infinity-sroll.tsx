@@ -19,14 +19,16 @@ const getObserver = (onIntersection: void) => new IntersectionObserver(onInterse
 
 const Index = () => {
     const [list, setList] = useState<User[]>([]);
-    const [pages, setPages] = useState<string[]>([]);
+    const [page, setPage] = useState(0);
 
     const dividerAfter = useRef(null);
     const dividerBefore = useRef(null);
 
     useEffect(() => {
-        pages.length && setList([...list, ...users.slice(list.length, list.length + pageSize)])
-    }, [pages])
+        if (page > 0) {
+            setList([...list, ...users.slice(list.length, list.length + pageSize)])
+        }
+    }, [page])
 
     if (typeof window !== "undefined") {
         useEffect(() => {
@@ -36,13 +38,8 @@ const Index = () => {
             function onIntersection() {
                 if (!debounceFlag) {
                     debounceFlag = true;
-
-                    console.log('up')
-                    setPages([Date.now() + '']);
-
-                    setTimeout(() => {
-                        debounceFlag = false;
-                    }, 10);
+                    setPage(prev => prev + 1);
+                    setTimeout(() => debounceFlag = false, 10);
                 }
             }
 
@@ -55,12 +52,13 @@ const Index = () => {
     }
 
     const handleScrollToTop = () => dividerBefore?.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+    
     return (
         <div className=" bg-[#0E0E0E] h-screen px-4 w-full  text-white">
             <button onClick={handleScrollToTop} className={sScrollToTop}> ^ </button>
             <div className={sGrid} id='scroll-container'>
                 <div ref={dividerBefore} ></div>
-                {list.map((el, idx) => <React.Fragment key={el.id}>{idx}<img alt={el.id} src={small + el.img} className="h-[300px]" /></React.Fragment>)}
+                {list.map((el, idx) => <img key={el.id} alt={el.id} src={small + el.img} className="h-[300px]" />)}
                 <div ref={dividerAfter}></div>
             </div>
         </div>
