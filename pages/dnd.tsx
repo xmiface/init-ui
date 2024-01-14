@@ -1,7 +1,7 @@
 import { TrashIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import { observer } from "mobx-react-lite";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card } from "../store/DndStore";
 import { RootStore } from "../store/RootStore";
 
@@ -11,9 +11,12 @@ const Index = observer(() => {
     const [draggbleId, setDraggbleId] = useState<string | undefined>(undefined);
     const [underDragId, setUnderDragId] = useState<string | undefined>(undefined);
 
-    const draggbleItem = useMemo(() => {
-        return RootStore.dnd.items.find(el => el.id === draggbleId)
-    }, [draggbleId])
+    const draggbleItem = useMemo(() => RootStore.dnd.items.find(el => el.id === draggbleId), [draggbleId])
+    const [list, setList] = useState<Card[]>([]);
+
+    useEffect(() => {
+        setList(RootStore.dnd.items)
+    }, [RootStore.dnd.items])
 
     function handleOnDragStart(el: Card) {
         setDraggbleId(el.id);
@@ -52,7 +55,7 @@ const Index = observer(() => {
     const sUnderDrag = (id: string) => clsx("border-2 p-4 flex ", underDragId === id ? 'border-t-green-900 ' : '')
 
     return <div className="flex flex-col">
-        {RootStore.dnd.items.map((el, idx) => <div className="relative" key={el.id}>
+        {list && list.map((el, idx) => <div className="relative" key={el.id}>
             <div
                 draggable
                 className={clsx("p-2", `${draggbleId === el.id && 'bg-red-900'}`)}
@@ -61,13 +64,8 @@ const Index = observer(() => {
                 onDragOver={(e) => handleOnDragOver(e, el)}
                 onDrop={(e) => handleOnDrop(e, el)}
             >
-                {showNewPlace(el.id) && <div className={sNewPlace}>
-                    {draggbleItem?.title}
-                </div>}
-
-                <div className={sUnderDrag(el.id)}>
-                    {el.title}
-                </div>
+                {showNewPlace(el.id) && <p className={sNewPlace}> {draggbleItem?.title} </p>}
+                <p className={sUnderDrag(el.id)}> {el.title} </p>
             </div>
 
             {draggbleItem?.id !== el.id &&
@@ -82,4 +80,3 @@ const Index = observer(() => {
 })
 
 export default Index;
-
