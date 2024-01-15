@@ -1,15 +1,15 @@
+import axios from "axios";
 import { observer } from "mobx-react-lite";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import users from './users.json';
+import { useEffect, useRef, useState } from "react";
 
 type User = { id: string, img: string }
+interface ServerData { data: User[] };
 
-const sScrollToTop = "h-[32px] w-[32px] absolute bottom-[8px] right-[32px] rounded-full hover:text-black  bg-twitchdarkbg hover:bg-twitchdarkpink duration-300 flex justify-center items-center"
-const sGrid = "h-[100%] grid grid-cols-1 gap-8 overflow-y-scroll  overflow-x-hidden custom-scrollbar"
+const sScrollToTop = "h-[64px] w-[64px] absolute bottom-[8px] right-[32px] rounded-full hover:text-black  bg-twitchdarkbg hover:bg-twitchdarkpink duration-300 flex justify-center items-center"
+const sGrid = "h-[100%] grid justify-center grid-cols-1 gap-8 overflow-y-scroll  overflow-x-hidden custom-scrollbar"
 
 const prefix = 'https://image.lexica.art/'
 const [full, small] = [prefix + 'full_webp/', prefix + 'sm2_webp/']
-
 const pageSize = 4;
 
 const getObserver = (onIntersection: void) => new IntersectionObserver(onIntersection, {
@@ -18,16 +18,19 @@ const getObserver = (onIntersection: void) => new IntersectionObserver(onInterse
 })
 
 const Index = () => {
+    const [users, setUsers] = useState<User[]>([]);
     const [list, setList] = useState<User[]>([]);
     const [page, setPage] = useState(0);
+
+    useEffect(() => {
+        axios.get<unknown, ServerData>('/api/issue/infinity-scroll').then(res => res?.data && setUsers(res.data))
+    }, [])
 
     const dividerAfter = useRef(null);
     const dividerBefore = useRef(null);
 
     useEffect(() => {
-        if (page > 0) {
-            setList([...list, ...users.slice(list.length, list.length + pageSize)])
-        }
+        (page > 0) && setList([...list, ...users.slice(list.length, list.length + pageSize)])
     }, [page])
 
     if (typeof window !== "undefined") {
@@ -46,19 +49,19 @@ const Index = () => {
             // define an observer instance
             let observer = getObserver(onIntersection);
 
-            // Use the observer to observe an element
+            // connect observer to HTMLElement
             dividerAfter.current && observer.observe(dividerAfter.current)
         }, [])
     }
 
     const handleScrollToTop = () => dividerBefore?.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
-    
+
     return (
         <div className=" bg-[#0E0E0E] h-screen px-4 w-full  text-white">
             <button onClick={handleScrollToTop} className={sScrollToTop}> ^ </button>
             <div className={sGrid} id='scroll-container'>
                 <div ref={dividerBefore} ></div>
-                {list.map((el, idx) => <img key={el.id} alt={el.id} src={small + el.img} className="h-[300px]" />)}
+                {list.map((el, idx) => <img key={el.id} alt={el.id} src={small + el.img} className="h-[300px] mx-auto" />)}
                 <div ref={dividerAfter}></div>
             </div>
         </div>
