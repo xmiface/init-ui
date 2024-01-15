@@ -1,8 +1,8 @@
 import { faker } from "@faker-js/faker";
 import axios from "axios";
 import clsx from "clsx";
-import { observer } from "mobx-react-lite"
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useCallback, useEffect, useState } from "react";
 
 const sButton = "h-[50px] w-[50px] border-2 rounded-xl border-twitchdarkpink hover:border-twitchpink";
 const sHover = 'border-twitchgrey hover:border-twitchhovergrey'
