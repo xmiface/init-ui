@@ -13,9 +13,19 @@ const Index = () => {
     const [page, setPage] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(10);
 
-    const handleGetData = useCallback((value: number) => axios.post('/api/issue/pagination', { page, pageSize }).then(res => setData(res.data)).catch((err) => console.log(err)), [page, pageSize])
-    useEffect(() => void handleGetData(page), [page])
-    const getButton = (el: number, state: number, onClick: (value: number) => void) => <button key={faker.datatype.uuid()} className={clsx(sButton, el == page ? sHover : '')} onClick={() => onClick(el)}>{el}</button>
+    const handleGetData = useCallback((value: number) => {
+        axios.post('/api/issue/pagination', { page, pageSize })
+            .then(res => setData(res.data))
+            .catch((err) => console.log(err))
+    }, [page, pageSize])
+
+    useEffect(() => {
+        void handleGetData(page)
+    }, [page, pageSize])
+
+    const getButton = (el: number, state: number, onClick: (value: number) => void) => (
+        <button key={faker.datatype.uuid()} className={clsx(sButton, el == state ? sHover : '')} onClick={() => onClick(el)}>{el}</button>
+    )
 
     return (
         <div className=" bg-[#0E0E0E] h-screen px-4 w-full  text-white mx-auto ">

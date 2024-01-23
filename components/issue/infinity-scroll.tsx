@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import axios from "axios";
 import { observer } from "mobx-react-lite";
 import { useEffect, useRef, useState } from "react";
@@ -6,7 +7,7 @@ type User = { id: string, img: string }
 interface ServerData { data: User[] };
 
 const sScrollToTop = "h-[64px] w-[64px] absolute bottom-[8px] right-[32px] rounded-full hover:text-black  bg-twitchdarkbg hover:bg-twitchdarkpink duration-300 flex justify-center items-center"
-const sGrid = "h-[100%] grid justify-center grid-cols-1 gap-8 overflow-y-scroll  overflow-x-hidden custom-scrollbar"
+const sGrid = "border-2 h-[100%] grid justify-center grid-cols-1 gap-8 overflow-y-scroll  overflow-x-hidden custom-scrollbar"
 
 const prefix = 'https://image.lexica.art/'
 const [full, small] = [prefix + 'full_webp/', prefix + 'sm2_webp/']
@@ -23,14 +24,25 @@ const Index = () => {
     const [page, setPage] = useState(0);
 
     useEffect(() => {
-        axios.get<unknown, ServerData>('/api/issue/infinity-scroll').then(res => res?.data && setUsers(res.data))
+        axios.get<unknown, ServerData>('/api/issue/infinity-scroll')
+            .then(res => {
+                if (res?.data) {
+                    setUsers(res.data)
+                    setList(res.data.slice(0, 4))
+                }
+            })
     }, [])
 
     const dividerAfter = useRef(null);
     const dividerBefore = useRef(null);
 
     useEffect(() => {
-        (page > 0) && setList([...list, ...users.slice(list.length, list.length + pageSize)])
+        let array = [...list, ...users.slice(list.length, list.length + pageSize)]
+        console.log('@', list);
+
+        if (page > 0) {
+            setList(array)
+        }
     }, [page])
 
     if (typeof window !== "undefined") {
@@ -68,4 +80,4 @@ const Index = () => {
     )
 }
 
-export default observer(Index);
+export default Index;

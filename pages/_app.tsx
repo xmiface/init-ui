@@ -22,6 +22,10 @@ export const AuthProvider: React.FC<{ children: any }> = observer(({ children })
     return <div className=" min-h-screen overflow-hidden h-full w-full">{children}</div>
   }
 
+  if (!RootStore.auth.loading && !RootStore.auth.isAuth) {
+    return <LoginPage />
+  }
+
   return (
     <div className="w-full bg-zinc-900 h-screen  border-blue-500  overflow-hidden">
       <div className="max-w-[932px] border-2 mx-auto font-medium text-slate-200 h-full  border-pink-500">
@@ -34,8 +38,6 @@ export const AuthProvider: React.FC<{ children: any }> = observer(({ children })
             <div className="border-red-500 h-full">{children}</div>
           </div>
         }
-
-        {!RootStore.auth.loading && !RootStore.auth.isAuth && <LoginPage />}
       </div>
     </div>
   );

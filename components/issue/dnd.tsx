@@ -2,8 +2,8 @@ import { TrashIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import { observer } from "mobx-react-lite";
 import { useEffect, useMemo, useState } from "react";
-import { Card } from "../store/DndStore";
-import { RootStore } from "../store/RootStore";
+import { Card } from "../../store/DndStore";
+import { RootStore } from "../../store/RootStore";
 
 const sNewPlace = "border-2 p-4 my-2 bg-green-900"
 

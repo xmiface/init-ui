@@ -8,7 +8,6 @@ const sSelect = "relative w-[100%] flex flex-col gap-10";
 const onBlurWrapper = "fixed top-0 left-0 h-screen w-screen bg-red-500 opacity-10 z-20";
 
 const useUef = (isOpen: boolean, setList: (value: string[]) => void, setIsLoadingList: (value: boolean) => void) => {
-
     useEffect(() => {
         if (isOpen) {
             setIsLoadingList(true);
@@ -29,14 +28,16 @@ const useListInit = () => {
     const [list, setList] = useState<string[]>([]);
     const [isOpenList, setIsOpenList] = useState<boolean>(false);
     const [isLoadingList, setIsLoadingList] = useState<boolean>(false);
-
-    return { list, setList, isOpenList, setIsOpenList, isLoadingList, setIsLoadingList }
+    type SetBoolean = (value: boolean) => void;
+    type Control = [string[], (value: string[]) => void, boolean, SetBoolean, boolean, SetBoolean]
+    const control = [list, setList, isOpenList, setIsOpenList, isLoadingList, setIsLoadingList] as Control
+    return control
 }
 
 const Index = () => {
-    const { list: listA, setList: setListA, isOpenList: isOpenListA, setIsOpenList: setIsOpenListA, isLoadingList: isLoadingListA, setIsLoadingList: setIsLoadingListA } = useListInit();
-    const { list: listB, setList: setListB, isOpenList: isOpenListB, setIsOpenList: setIsOpenListB, isLoadingList: isLoadingListB, setIsLoadingList: setIsLoadingListB } = useListInit();
-    const { list: listC, setList: setListC, isOpenList: isOpenListC, setIsOpenList: setIsOpenListC, isLoadingList: isLoadingListC, setIsLoadingList: setIsLoadingListC } = useListInit();
+    const [listA, setListA, isOpenListA, setIsOpenListA, isLoadingListA, setIsLoadingListA] = useListInit();
+    const [listB, setListB, isOpenListB, setIsOpenListB, isLoadingListB, setIsLoadingListB] = useListInit();
+    const [listC, setListC, isOpenListC, setIsOpenListC, isLoadingListC, setIsLoadingListC] = useListInit();
 
     const handleCloseAll = () => {
         setIsOpenListA(false);
