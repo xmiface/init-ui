@@ -28,7 +28,7 @@ export const AuthProvider: React.FC<{ children: any }> = observer(({ children })
 
   return (
     <div className="w-full bg-zinc-900 h-screen  border-blue-500  overflow-hidden">
-      <div className="max-w-[932px] border-2 mx-auto font-medium text-slate-200 h-full  border-pink-500">
+      <div className="max-w-[932px]  mx-auto font-medium text-slate-200 h-full  ">
 
         {RootStore.auth.loading && <Loader />}
 
