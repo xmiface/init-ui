@@ -1,8 +1,8 @@
 import axios from "axios";
-import { FC, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useRef } from "react";
+import { getNewBoxShadow } from "../../../utils/box-shadow";
 import { timeout } from "../../../utils/timeout";
 import { small } from "../../issue/infinity-scroll";
-import { getNewBoxShadow } from "../../../utils/box-shadow";
 
 const delays = {
     transition: '.1s',
@@ -28,9 +28,14 @@ const images = [
 
 const SLOT_BG = 'https://image.lexica.art/full_webp/4de811ac-40f1-4bdd-8b92-594e4872b776'
 
-const Main: FC = () => {
+const Main: FC<{ setFullPageBg: (value: string) => void }> = ({ setFullPageBg }) => {
     const rootRef = useRef(null);
     const spaceRef = useRef(null);
+
+    useEffect(()=>{
+        console.log('upd', SLOT_BG)
+        setFullPageBg(SLOT_BG);
+    },[])
 
     const createNew = useCallback(async () => {
 
@@ -54,16 +59,14 @@ const Main: FC = () => {
 
                         q.style.height = '200px'
                         q.style.width = '320px'
-                        q.style.outline = 'unset !important';
-                        q.style.border = 'unset !important'
-                        q.style.boxShadow = 'border-box'
-
-                        q.style.background = `url(${images[blockValue]})`
+                        q.src = images[blockValue]
+                        q.style.objectFit = 'cover'
 
                         el.push(q)
-                        q.style.backgroundSize = 'cover'
                     })
 
+                    el.forEach(i => i.style.border = 'none !important');
+                    el.forEach(i => i.style.boxSizing = 'content-box');
                     el.forEach(i => column.append(i));
                     rootRef.current.append(column);
                 })
@@ -120,8 +123,8 @@ const Main: FC = () => {
 
     return (
         <div className="left-0 top-0 h-full w-full rounded-3xl overflow-hidden" style={{ background: `url(${SLOT_BG})`, backgroundSize: 'cover' }}>
-            <button ref={spaceRef} onClick={handleClick} autoFocus className=" bg-slate-800 disabled:bg-slate-300 absolute bottom-[-150px] left-[320px] w-[320px] h-16">SPIN </button>
-            <div className="duration-300 h-full w-full absolute left-0 top-0 flex overflow-hidden " ref={rootRef} />
+            <button ref={spaceRef} onClick={handleClick} autoFocus className=" bg-[rgba(0,0,0,0.36)] disabled:bg-[rgba(73,71,71,0.36)]  absolute bottom-[-150px] left-[320px] w-[320px] h-16">SPIN </button>
+            <div className="duration-300 h-full w-full absolute left-0 top-0 flex overflow-hidden rounded-xl " ref={rootRef} />
         </div>
     )
 }
