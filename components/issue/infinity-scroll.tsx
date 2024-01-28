@@ -9,8 +9,8 @@ interface ServerData { data: User[] };
 const sScrollToTop = "h-[64px] w-[64px] absolute bottom-[8px] right-[32px] rounded-full hover:text-black  bg-twitchdarkbg hover:bg-twitchdarkpink duration-300 flex justify-center items-center"
 const sGrid = "border-2 h-[100%] grid justify-center grid-cols-1 gap-8 overflow-y-scroll  overflow-x-hidden custom-scrollbar"
 
-const prefix = 'https://image.lexica.art/'
-const [full, small] = [prefix + 'full_webp/', prefix + 'sm2_webp/']
+export const prefix = 'https://image.lexica.art/'
+export const [full, small] = [prefix + 'full_webp/', prefix + 'sm2_webp/']
 const pageSize = 4;
 
 const getObserver = (onIntersection: void) => new IntersectionObserver(onIntersection, {

@@ -11,6 +11,21 @@ const Index = () => {
     const [subFolders, setSubFolders] = useState<string[]>([]);
     const pageNameRef = useRef(null);
     const [folder, setFolder] = useState<string>('');
+    const [nameError, setNameError] = useState<boolean>(false);
+
+    const handleType = (e) => {
+        if (pageNameRef.current) {
+
+            const text = pageNameRef.current.value;
+            var english = /^[A-Za-z0-9-]*$/;
+            if (!english.test(text) || text.match(' ')) {
+                setNameError(true);
+                return;
+            }
+            setNameError(false);
+
+        }
+    }
 
     useEffect(() => {
         axios.post('/api/projects/self-control/create-page', { type: 'getFolders' })
@@ -33,8 +48,10 @@ const Index = () => {
                 <h1 className=" text-3xl text-center py-4">self control</h1>
 
                 <div className="flex gap-8 h-12 my-8">
-                    <input className="bg-slate-900 rounded-xl border-twitchdarkpink hover:border-twitchpink duration-300 py-2 px-4" type="text" placeholder="page name" ref={pageNameRef} />
+                    <input className="bg-slate-900 rounded-xl border-twitchdarkpink hover:border-twitchpink duration-300 py-2 px-4" type="text" placeholder="page name" ref={pageNameRef} onChange={handleType} />
                     <button onClick={hCreateProject} className={sButton}>create page</button>
+                    {nameError && <p className="text-red-500">Wrong page name</p>}
+
                 </div>
 
                 <div className="flex gap-8">
@@ -48,12 +65,15 @@ const Index = () => {
                                     .then(res => setSubFolders(res?.data))
                             }}
                         >{el}</button>)}
+
+
                     </div>
 
                     <div className="flex flex-col gap-8 w-[300px]">
                         <h2>sub folders</h2>
                         {subFolders.map(el => <button key={el} className={sButton}>{el}</button>)}
                     </div>
+
 
                 </div>
 

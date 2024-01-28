@@ -6,6 +6,7 @@ export const sButton = `py-2 px-4 border-2 border-zinc-800 bg-twitchpink hover:b
 const Index = () => {
   return (
     <div className="flex flex-col">
+      <Link href='/projects/slot'> slot </Link>
       <Link href='/projects/self-control'> self-control </Link>
       _
       <Link href='/ui/scroll-slide'> scroll-slide </Link>
