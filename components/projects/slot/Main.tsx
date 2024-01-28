@@ -14,16 +14,16 @@ const delays = {
 const COLUMNS = ['left', 'middle', 'right'];
 
 const images = [
-    small + '154a1d92-617f-4cca-9e82-49825ee93e26',
-    small + '8208d083-375d-49de-9cb4-b551068f44a7',
     small + '0b2d79e5-c6fe-4f6b-800e-dc03a28a4438',
-    small + '1c7a6dcd-c673-4f98-a2c0-593d278a3b63',
-    small + 'd785b833-a88c-4749-87a7-8ed24d00da64',
-    small + '75837fff-a7fb-478c-9465-5f93c1bc2cd3',
-    small + '77bb7cae-70b1-439e-a7cf-e24c5fb84404',
-    small + '52e2e312-4fb7-4128-a131-30c159a532a0',
+    small + '3bff21cb-3150-45dc-8d73-11378e142c49',
+    small + '19e7cecd-c686-4a5a-9893-14f08d298b99',
+    small + '0784e4db-5968-4292-b627-d605169ead7b',
+    small + 'd9943cb4-e9f2-4ee3-a22b-fecf5bee481d',
     small + '1dbbfef3-1201-414c-965a-02eb7c9ee462',
-    small + '2767a76a-0bcb-4b4b-9d5d-e1037fd3f97e',
+    small + '2676de17-fd47-4381-9300-a270e1672563',
+    small + 'f8e5f725-ddb4-49e3-b135-0738238b745d',
+    small + 'f9b7ab3f-fcab-49d8-9aab-63e199ed6e9b',
+    small + '55dca8ce-339f-411c-be76-651a52005b19',
 ]
 
 const SLOT_BG = 'https://image.lexica.art/full_webp/4de811ac-40f1-4bdd-8b92-594e4872b776'
