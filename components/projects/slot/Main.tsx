@@ -1,8 +1,7 @@
-import axios from "axios";
-import { FC, useCallback, useEffect, useRef } from "react";
+import axios, { AxiosResponse } from "axios";
+import { FC, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { getNewBoxShadow } from "../../../utils/box-shadow";
 import { timeout } from "../../../utils/timeout";
-import { small } from "../../issue/infinity-scroll";
 
 const delays = {
     transition: '.1s',
@@ -13,117 +12,149 @@ const delays = {
 
 const COLUMNS = ['left', 'middle', 'right'];
 
-const images = [
-    small + '0b2d79e5-c6fe-4f6b-800e-dc03a28a4438',
-    small + '3bff21cb-3150-45dc-8d73-11378e142c49',
-    small + '19e7cecd-c686-4a5a-9893-14f08d298b99',
-    small + '0784e4db-5968-4292-b627-d605169ead7b',
-    small + 'd9943cb4-e9f2-4ee3-a22b-fecf5bee481d',
-    small + '1dbbfef3-1201-414c-965a-02eb7c9ee462',
-    small + '2676de17-fd47-4381-9300-a270e1672563',
-    small + 'f8e5f725-ddb4-49e3-b135-0738238b745d',
-    small + 'f9b7ab3f-fcab-49d8-9aab-63e199ed6e9b',
-    small + '55dca8ce-339f-411c-be76-651a52005b19',
-]
+type Root = HTMLDivElement | null;
+const rootOnInit = (root: Root, url: string) => {
+    if (!root) {
+        return;
+    }
 
-const SLOT_BG = 'https://image.lexica.art/full_webp/4de811ac-40f1-4bdd-8b92-594e4872b776'
+    root.style.background = `url(${url})`;
+    root.style.backgroundSize = `cover`;
+}
+
+const createTopImages = (values: number[][], images: string[], root: Root) => {
+    values.forEach((value, col) => {
+        let column = document.createElement('div');
+        column.className = 'col';
+        column.style.transform = 'translateY(-600px)'
+        column.style.transition = delays.transition
+
+        let el = [] as HTMLElement[];
+
+        COLUMNS.forEach((item, row) => {
+            const blockValue = values[col][row];
+
+            let q = document.createElement('img');
+
+            q.style.height = '200px';
+            q.style.width = '320px';
+            q.src = images ? images[blockValue] : '';
+            q.style.objectFit = 'cover';
+
+            el.push(q)
+        })
+
+        el.forEach(i => i.style.border = 'none !important');
+        el.forEach(i => i.style.boxSizing = 'content-box');
+        el.forEach(i => column.append(i));
+        root && root.append(column);
+    })
+}
+
+const moveImagesInRoot = (root: Root) => {
+    const cols = root && root.querySelectorAll<HTMLElement>('.col');
+
+    cols && cols.forEach((el, idx) => {
+        setTimeout(() => {
+            el.style.transform = 'translateY(0px)'
+        }, idx * delays.columnDelay);
+    })
+}
+
+const hideImages = async (root: Root) => {
+    const cols = root && root.querySelectorAll<HTMLElement>('.col');
+    cols && cols.forEach((element, index) => {
+        setTimeout(() => {
+            element.style.marginTop = '600px';
+        }, index * delays.columnDelay);
+    });
+
+    await timeout(delays.removeOld);
+    cols && cols.forEach(el => el.remove())
+}
 
 const Main: FC<{ setFullPageBg: (value: string) => void }> = ({ setFullPageBg }) => {
     const rootRef = useRef(null);
     const spaceRef = useRef(null);
+    const [images, setImages] = useState<string[] | undefined>();
 
-    useEffect(()=>{
-        console.log('upd', SLOT_BG)
-        setFullPageBg(SLOT_BG);
-    },[])
-
-    const createNew = useCallback(async () => {
-
-        await axios.get('/api/projects/slot/spin').catch(err => console.log(err)).then(res => {
-            const values: number[][] = res.data.slots;
-
-            if (Array.isArray(values)) {
-
-                values.forEach((value, col) => {
-                    let column = document.createElement('div');
-                    column.className = 'col';
-                    column.style.marginTop = '-600px'
-                    column.style.transition = delays.transition
-
-                    let el = [];
-
-                    COLUMNS.forEach((item, row) => {
-                        const blockValue = values[col][row];
-
-                        let q = document.createElement('img');
-
-                        q.style.height = '200px'
-                        q.style.width = '320px'
-                        q.src = images[blockValue]
-                        q.style.objectFit = 'cover'
-
-                        el.push(q)
-                    })
-
-                    el.forEach(i => i.style.border = 'none !important');
-                    el.forEach(i => i.style.boxSizing = 'content-box');
-                    el.forEach(i => column.append(i));
-                    rootRef.current.append(column);
-                })
-            }
-
-            const cols = rootRef.current.querySelectorAll('.col');
-
-            cols.forEach((el, idx) => {
-                setTimeout(() => {
-                    el.style.marginTop = '0px'
-                }, idx * delays.columnDelay);
-            })
-
-            setTimeout(() => {
-                spaceRef.current.disabled = false;
-                spaceRef.current.focus();
-                rootRef.current.style.boxShadow = getNewBoxShadow();
-            }, delays.undisable);
-        })
-    }, [])
-
-    const removeOld = useCallback(async () => {
-        const current = rootRef.current
-        if (!current) {
+    const init = useCallback(async () => {
+        const root = rootRef.current as HTMLDivElement | null;
+        if (!root) {
             return;
         }
 
-        rootRef.current.style.boxShadow = getNewBoxShadow();
-        spaceRef.current.disabled = true;
+        type Response = AxiosResponse<{ bg: string, images: string[] }>
 
-        const cols = current.querySelectorAll('.col');
-        cols.forEach((element, index) => {
-            setTimeout(() => {
-                element.style.marginTop = '600px';
-            }, index * delays.columnDelay);
-        });
-
-        await timeout(delays.removeOld);
-        cols.forEach(el => el.remove())
-        createNew();
-    }, [])
-
-    const handleClick = useCallback(() => {
-        removeOld();
-    }, [])
-
-    useEffect(() => {
-        spaceRef.current.disabled = true;
-
-        if (images?.length) {
-            createNew();
+        try {
+            const response = await axios.get('/api/projects/slot/content') as Response;
+            setFullPageBg(response.data.bg);
+            rootOnInit(root, response.data.bg);
+            setImages(response.data.images);
+        } catch (error) {
+            console.log('error', error)
         }
     }, [])
 
+    useLayoutEffect(() => void init(), []);
+
+    const createNew = useCallback(async () => {
+        type Response = AxiosResponse<{ slots: number[][] }>;
+
+        try {
+            const response = await axios.get('/api/projects/slot/spin') as Response;
+            const values: number[][] = response.data.slots;
+
+            const root = rootRef.current as HTMLDivElement | null;
+            const spaceButton = spaceRef.current as HTMLButtonElement | null;
+
+            if (!root || !spaceButton || !images) {
+                return;
+            }
+
+            createTopImages(values, images, root)
+            moveImagesInRoot(root);
+
+            setTimeout(() => {
+                spaceButton.disabled = false;
+                spaceButton.focus();
+                root.style.boxShadow = getNewBoxShadow();
+            }, delays.undisable);
+        } catch (error) {
+            console.log(error)
+        }
+
+    }, [images])
+
+    const removeOld = useCallback(async () => {
+        const root = rootRef.current as HTMLDivElement | null;
+        const spaceButton = spaceRef.current as HTMLButtonElement | null;
+
+        if (!root || !spaceButton) {
+            return;
+        }
+
+        root.style.boxShadow = getNewBoxShadow();
+        spaceButton.disabled = true;
+
+        await hideImages(root);
+        createNew();
+    }, [images])
+
+    const handleClick = useCallback(() => removeOld(), [images, setImages])
+
+    useEffect(() => {
+        const spaceButton = spaceRef.current as HTMLButtonElement | null;
+
+        if (spaceButton && images?.length) {
+            spaceButton.disabled = true;
+            createNew();
+        }
+    }, [images, setImages, createNew])
+
     return (
-        <div className="left-0 top-0 h-full w-full rounded-3xl overflow-hidden" style={{ background: `url(${SLOT_BG})`, backgroundSize: 'cover' }}>
-            <button ref={spaceRef} onClick={handleClick} autoFocus className=" bg-[rgba(0,0,0,0.36)] disabled:bg-[rgba(73,71,71,0.36)]  absolute bottom-[-150px] left-[320px] w-[320px] h-16">SPIN </button>
+        <div className="left-0 top-0 h-full w-full rounded-3xl overflow-hidden">
+            <button ref={spaceRef} onClick={handleClick} autoFocus className=" bg-[rgba(0,0,0,0.36)] disabled:bg-[rgba(73,71,71,0.36)] absolute bottom-[-150px] left-[320px] w-[320px] h-16">SPIN</button>
             <div className="duration-300 h-full w-full absolute left-0 top-0 flex overflow-hidden rounded-xl " ref={rootRef} />
         </div>
     )
