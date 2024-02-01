@@ -10,8 +10,6 @@ const delays = {
     removeOld: 300
 }
 
-const COLUMNS = ['left', 'middle', 'right'];
-
 type Root = HTMLDivElement | null;
 const rootOnInit = (root: Root, url: string) => {
     if (!root) {
@@ -28,19 +26,18 @@ const createTopImages = (values: number[][], images: string[], root: Root) => {
         column.className = 'col';
         column.style.transform = 'translateY(-600px)'
         column.style.transition = delays.transition
+        column.style.width = '100%';
+        // column.style.width = 960 / col.length + 'px';
 
         let el = [] as HTMLElement[];
 
-        COLUMNS.forEach((item, row) => {
+        value.forEach((item, row) => {
             const blockValue = values[col][row];
-
             let q = document.createElement('img');
-
-            q.style.height = '200px';
-            q.style.width = '320px';
+            q.style.height = (600 / value.length) + 'px';
+            q.style.margin = '0 auto';
             q.src = images ? images[blockValue] : '';
             q.style.objectFit = 'cover';
-
             el.push(q)
         })
 
