@@ -1,1 +1,2 @@
-![alt text](https://raw.githubusercontent.com/xmiface/init/3038eaad1c1c087e41545fe18b61fa2758a6a9bb/public/preview.png)
+
+![alt text](https://image.lexica.art/full_webp/092840e5-986b-4e5a-887b-108d2b287073)
