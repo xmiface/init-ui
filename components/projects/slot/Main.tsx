@@ -28,9 +28,7 @@ const createTopImages = (values: number[][], images: string[], root: Root) => {
     column.className = 'col';
     column.style.transform = 'translateY(-600px) ';
     column.style.transition = delays.transition;
-    // column.style.width = '100%';
     column.style.width = 960 / values.length + 'px';
-    console.log('@value', value)
 
     const el = [] as HTMLElement[];
     console.log('zxc');
